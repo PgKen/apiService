@@ -1,0 +1,256 @@
+<!DOCTYPE html>
+<html lang="en">
+
+
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=0" />
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.0/jquery.min.js"></script>
+    <link rel="stylesheet" href="/stylesheets/style.css">
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/js-cookie@2/src/js.cookie.min.js"></script>
+
+    <title><%= title %> </title>
+</head>
+
+<body>
+
+    <div class="ad-mainContent">
+        <div class="ad-mainTitle">
+            <label for=""><%= title %> </label>
+            <span>
+                <i onclick="linkLogout()" class="material-icons">exit_to_app</i>
+            </span>
+        </div>
+        <div class="ad-mainBox">
+            <div class="ad-mainArticle">
+                <div class="ad-titleArticle"><%= subTitle %></div>
+                <div class="ad-boxArticle">
+                    <div class="ad-form-job">
+                        <form action="/sendJob" method="POST">
+                            <input type="hidden" value="<%= data.IdUser %>">
+                            <ul>
+                                <li>
+                                    <label for="">แจ้งไปยังฝ่าย</label>
+                                    <select name="mode" id="mode">
+                                        <% for( let i = 0; i < data.dataGroup.length; i++ ) { %>
+                                        <option value="<%= data.dataGroup[i].id %>"><%= data.dataGroup[i].name_job %>
+                                        </option>
+                                        <% } %>
+                                    </select>
+                                </li>
+                                <li>
+                                    <label for="">รายละเอียดของปัญหา</label>
+                                </li>
+                                <li>
+                                    <textarea contenteditable="true" onclick="loadProblem(0)" onkeypress="chkKey(event)"
+                                        name="detail" id="detail" cols="30" rows="4"></textarea>
+                                </li>
+                                <li class="keyboardProblem" id="keyboardProblem"></li>
+                                <li>
+                                    <span style="flex:0.5;">ผู้แจ้ง</span>
+                                    <span class='data' style="flex:2;"><%= data.username %>&nbsp;<%= data.surname %>
+                                    </span>
+                                    <span style="flex:0.5;">วันที่</span>
+                                    <span class='data'
+                                        style="flex:1.5;"><%= moment(dateNow).format('DD-MM-YYYY') %></span>
+                                    <span style="flex:0.5;">เวลา</span>
+                                    <span class='data'><%= moment(dateNow).format('HH:mm') %>&nbsp;น.</span>
+
+                                    <span style="flex:0.5;">ฝ่าย</span>
+                                    <span class='data'><%= data.nameDp %> </span>
+                                    <input type="hidden" name="date"
+                                        value="<%= moment(dateNow).format('YYYY-MM-DD') %>">
+                                    <input type="hidden" name="time" value="<%= moment(dateNow).format('HH:mm') %>">
+                                    <input type="hidden" name="userId" value="<%= data.idUser %>">
+                                </li>
+                                <li style="width:80%;">
+                                    <label for="" style="flex:0.5;">เบอร์โทร</label>
+                                    <input type="text" name="tel" id="tel" onclick="keyboardTel()">
+                                </li>
+                                <li>&nbsp;</li>
+                                <li>
+                                    <button type="submit">
+                                        <i class="material-icons">
+                                            send
+                                        </i>
+                                        <span>
+                                            ส่งเรื่องแจ้งซ่อม
+                                        </span>
+                                    </button>
+                                </li>
+                            </ul>
+
+                        </form>
+                        <div class="keyboardTel" id="keyboardTel">
+                            key
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </div>
+</body>
+<script>
+    let oldTel = ""
+    let newTel = ""
+    let statusShif = 0
+
+    let oldKeyProblem = ""
+    let newKeyProblem = ""
+
+    let th = ["cls", "", "", "ภ", "ถ", "ุ", "ึ", "ค", "ต", "จ", "ข", "ช",
+        "Backspace", "", "ๆ", "ไ", "ำ", "พ", "ะ", "ั", "ี", "ร", "น", "ย", "บ", "ล", "ฃ",
+        "", "ฟ", "ห", "ก", "ด", "เ", "้", "่", "า", "ส", "ว", "ง", "Enter",
+        "Shift", "ผ", "ป", "แ", "อ", "ิ", "ื", "ท", "ม", "ใ", "ฝ", "Shift",
+        "space", "cls", "1", "2", "3", "4", "ู", "฿", "5", "6", "7", "8", "9",
+        "Backspace", "", "0", "\"", "ฎ", "ฑ", "ธ", "ํ", "๊", "ณ", "ฯ", "ญ", "ฐ", "\,", "ฅ",
+        "", "ฤ", "ฆ", "ฏ", "โ", "ฌ", "็", "๋", "ษ", "ศ", "ซ", ".", "Enter",
+        "Shift", "(", ")", "ฉ", "ฮ", "ฺ", "์", "?", "ฒ", "ฬ", "ฦ", "Shift",
+        "space"
+    ]
+
+    function linkLogout() {
+        location.href = "/logout"
+    }
+
+    function keyboardTel() {
+
+        document.getElementById('keyboardProblem').innerHTML = ""
+
+        document.getElementById('keyboardTel').style.display = "flex"
+        let arrTxt = ["filter_1", "filter_2", "filter_3", "filter_4", "filter_5", "filter_6", "filter_7", "filter_8",
+            "filter_9",
+            "copyright",
+            "exposure_zero",
+        ]
+        let txt = "<ul>"
+        for (let i = 0; i < arrTxt.length; i++) {
+            txt += "<li><i class='material-icons' onclick='clickNumberTel(" + i + ")'>" + arrTxt[i] + "</i></li>"
+        }
+        txt +=
+            "<li><span onclick='okKeyboardTel()'style='padding: 4px;font-size: 35px;background-color: #FFEB3B;'>OK</span></li>"
+        txt += "</ul>"
+        console.log(txt)
+        document.getElementById('keyboardTel').innerHTML = txt
+    }
+
+    function okKeyboardTel() {
+        document.getElementById('keyboardTel').style.display = "none"
+
+    }
+
+    function clickNumberTel(i) {
+        //console.log(i)
+        if (i == 10) {
+            i = 0
+        } else {
+            i = i + 1
+        }
+        console.log(i)
+        if (i == 10) {
+            document.getElementById('tel').value = ""
+            oldTel = ""
+        } else {
+            newTel = oldTel + i
+            document.getElementById('tel').value = newTel
+            oldTel = newTel
+        }
+    }
+
+    function loadProblem(i) {
+        document.getElementById('keyboardTel').style.display = "none"
+        //document.getElementById('keyboardTel').innerHTML = ""
+
+
+        let start = 0;
+        let end = 53;
+
+        if (i == 0) {
+            start = 0;
+            end = 53;
+            statusShif = 1
+        } else {
+            start = 53;
+            end = 106;
+            statusShif = 0
+        }
+
+        let txt = '<ul>'
+
+        for (let i = start; i < end; i++) {
+            //console.log(th[i])
+            if (th[i] == 'Backspace') {
+                txt += "<li onclick='clickKeyBackspace()' style='flex-basis: 100px;'>" + th[i] + "</li>"
+            } else if (th[i] == 'Enter') {
+                txt += "<li onclick='clickKeyEnter()' style='flex-basis: 100px;'>" + th[i] + "</li>"
+            } else if (th[i] == 'Shift') {
+                txt += "<li onclick='loadProblem(" + statusShif + ")' style='flex-basis: 100px;'>" + th[i] + "</li>"
+            } else if (th[i] == 'space') {
+                txt += "<li onclick='clickKeySpace()' style='flex-basis: 350px;margin: 2px auto;'>" + th[i] + "</li>"
+            } else if (th[i] == 'cls') {
+                txt += "<li onclick='clickKeyCls()' style='color:orangered;'>" + th[i] + "</li>"
+            } else {
+                txt += "<li onclick='clickKeyProblem(" + i + ")'>" + th[i] + "</li>"
+            }
+
+        }
+        txt += "</ul>"
+
+        document.getElementById('keyboardProblem').innerHTML = txt
+
+    }
+
+    function clickKeyProblem(i) {
+        console.log("key i =" + i + "value = " + th[i])
+        newKeyProblem = oldKeyProblem + th[i]
+        console.log("newKeyProblem" + newKeyProblem)
+        document.getElementById('detail').value = newKeyProblem
+        //document.getElementById('detail').value = newKeyProblem
+        oldKeyProblem = newKeyProblem
+    }
+
+    function clickKeyBackspace() {
+        let getOld = document.getElementById('detail').value
+        getOld = getOld.substring(0, getOld.length - 1);
+        oldKeyProblem = getOld
+        document.getElementById('detail').value = oldKeyProblem
+        if (getOld.length == 0) {
+            document.getElementById('detail').value = ""
+        }
+    }
+
+    function clickKeySpace() {
+        newKeyProblem = oldKeyProblem + " "
+        document.getElementById('detail').value = newKeyProblem
+        oldKeyProblem = newKeyProblem
+    }
+
+    function clickKeyCls() {
+        oldKeyProblem = ""
+        document.getElementById('detail').value = oldKeyProblem
+
+    }
+
+    function clickKeyEnter() {
+        /*
+        newKeyProblem = oldKeyProblem + '&#13'
+        document.getElementById('detail').value = newKeyProblem
+        oldKeyProblem = newKeyProblem
+        */
+        document.getElementById('keyboardProblem').innerHTML = ""
+    }
+
+    function chkKey(event) {
+        var x = event.which || event.keyCode;
+        //console.log("keyCode = " + x)
+        if (x == 13) {
+            clickKeyEnter()
+        }
+    }
+</script>
+
+</html>
