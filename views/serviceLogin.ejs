@@ -49,6 +49,19 @@
                             </ul>
                         </form>
                     </div>
+                    <div class="boxExec" id="boxExec">
+                        <span>
+                            <i class="material-icons" onclick="linkRestart()">
+                                settings_backup_restore
+                            </i>
+                        </span>
+
+                        <span>
+                            <i class="material-icons" onclick="linkShutDown()">
+                                power_settings_new
+                            </i>
+                        </span>
+                    </div>
                     <div class="kbLogin" id="kbLogin">
                         <ul>
                             <li onclick="clearKeyboard()">
@@ -121,6 +134,9 @@
     ]
 
     function keyUser() {
+        /**/
+        document.getElementById('boxExec').style.display = "none"
+        /**/
         document.getElementById('ad-form').style.margin = "0 auto"
         document.getElementById('kbLogin').style.display = "flex"
         // Close Keyboard Password
@@ -128,12 +144,18 @@
     }
 
     function clearKeyboard() {
+        /**/
+        document.getElementById('boxExec').style.display = "flex"
+        /**/
         document.getElementById('ad-form').style.margin = "auto"
         document.getElementById('kbLogin').style.display = "none"
         document.getElementById('kbLoginPass').style.display = "none"
     }
 
     function keyPass(i) {
+        /**/
+        document.getElementById('boxExec').style.display = "none"
+        /**/
         document.getElementById('ad-form').style.margin = "0 auto"
         document.getElementById('kbLoginPass').style.display = "flex"
         // Close Keyboard Username
@@ -198,6 +220,9 @@
     }
 
     function clickKeyPasswordEnter() {
+        /**/
+        document.getElementById('boxExec').style.display = "flex"
+        /**/
         document.getElementById('ad-form').style.margin = "auto"
         document.getElementById('kbLoginPass').style.display = "none"
 

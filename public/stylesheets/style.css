@@ -271,6 +271,22 @@ body {
                   justify-content: center;
                   padding: 5px;
                   font-size: 18px; }
+          body .ad-mainContent .ad-mainBox .ad-mainArticle .ad-boxArticle .boxExec {
+            display: flex;
+            flex-direction: row;
+            padding: 0 15px 0 0;
+            justify-content: flex-end;
+            margin: 35px 0 0 0; }
+            body .ad-mainContent .ad-mainBox .ad-mainArticle .ad-boxArticle .boxExec span:nth-child(2) i {
+              color: red; }
+            body .ad-mainContent .ad-mainBox .ad-mainArticle .ad-boxArticle .boxExec span {
+              margin: 0 0 0 10px;
+              flex-basis: 50px; }
+              body .ad-mainContent .ad-mainBox .ad-mainArticle .ad-boxArticle .boxExec span i {
+                font-size: 50px;
+                color: #FF9800;
+                background-color: #004d25;
+                padding: 2px; }
           body .ad-mainContent .ad-mainBox .ad-mainArticle .ad-boxArticle .marAuto {
             margin: auto; }
           body .ad-mainContent .ad-mainBox .ad-mainArticle .ad-boxArticle .kbLogin {
@@ -355,7 +371,7 @@ body {
           body .ad-mainContent .ad-mainBox .ad-mainArticle .ad-boxArticle #kbLoginPass {
             display: none; }
         body .ad-mainContent .ad-mainBox .ad-mainArticle .centerSty {
-          height: -webkit-fill-available; }
+          height: 400px; }
 
 @media only screen and (max-width: 800px) {
   body .ad-mainContent {
