@@ -5,6 +5,7 @@ var moment = require('moment');
 
 var unirest = require('unirest');
 //var rfid = require('node-rfid');
+var exec = require('child_process').exec;
 
 
 //var mysql = require('mysql')
@@ -285,6 +286,28 @@ router.get('/api/podcasts', (req, res) => {
     res.status(200).send(response)
   });
 });
+
+router.get('/sh', (req, res) => {
+  //hell.shutdown
+  exec('pkill chromium', function (error, stdout, stderr) {})
+  exec('shutdown now', function (error, stdout, stderr) {
+    callback(stdout);
+  });
+  res.send('restart')
+})
+
+router.get('/re', (req, res) => {
+  //hell.shutdown
+  exec('pkill chromium', function (error, stdout, stderr) {})
+  setTimeout(() => {
+    exec('shutdown -r now', function (error, stdout, stderr) {
+      callback(stdout);
+    });
+  }, 1500);
+
+
+  res.send('shutdow')
+})
 
 
 
