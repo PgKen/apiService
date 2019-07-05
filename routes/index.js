@@ -16,14 +16,12 @@ const contTitle = "ระบบจัดการโปรแกรม"
 const contFnTitle = "ระบบงานแจ้งซ่อม"
 let login
 
-const urlChkLogin = "http://172.16.1.188:4400/fn-chkLogin"
-//const urlChkLogin = "http://localhost:4400/fn-chkLogin"
-//const urlChkLogin = "http://taladsrimuang.com:4400/fn-chkLogin"
-/******* sendJob */
-const urlSendJob = "http://172.16.1.188:4400/fn-sendJob"
-//const urlChkLogin = "http://localhost:4400/fn-chkLogin"
-//const urlChkLogin = "http://taladsrimuang.com:4400/fn-chkLogin"
-/***** End SendJob */
+var {
+  urlChkLogin
+} = require('../Config/dataConfig')
+var {
+  urlSendJob
+} = require('../Config/dataConfig')
 
 /***** RFID */
 
